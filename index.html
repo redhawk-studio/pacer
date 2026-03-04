@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pacer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0d0f14;
+      --surface: #161921;
+      --card: #1e2230;
+      --accent: #f0a500;
+      --accent2: #ff6b35;
+      --text: #f0eeea;
+      --muted: #7a8099;
+      --border: #2a2f42;
+      --radius: 12px;
+    }
+
+    html, body {
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    body {
+      background:
+        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(240,165,0,0.12) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 80% 100%, rgba(255,107,53,0.08) 0%, transparent 60%),
+        var(--bg);
+    }
+
+    .wrapper {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+    }
+
+    /* ── HEADER ── */
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+      animation: fadeDown 0.6s ease both;
+    }
+
+    .title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(72px, 14vw, 120px);
+      letter-spacing: 0.06em;
+      line-height: 0.9;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      filter: drop-shadow(0 0 40px rgba(240,165,0,0.3));
+    }
+
+    .subtitle {
+      margin-top: 10px;
+      font-size: 15px;
+      font-weight: 300;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* ── DISTANCE SELECTOR ── */
+    .distance-section {
+      margin-bottom: 16px;
+      animation: fadeUp 0.6s 0.08s ease both;
+    }
+
+    .seg-label {
+      font-size: 12px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 12px;
+      text-align: center;
+    }
+
+    .seg-buttons {
+      display: flex;
+      gap: 6px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 5px;
+    }
+
+    .seg-btn {
+      flex: 1;
+      padding: 11px 8px;
+      border: none;
+      border-radius: 9px;
+      background: transparent;
+      color: var(--muted);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+    }
+
+    .seg-btn:hover:not(.active) {
+      background: rgba(255,255,255,0.05);
+      color: var(--text);
+    }
+
+    .seg-btn.active {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #0d0f14;
+      font-weight: 700;
+      box-shadow: 0 2px 14px rgba(240,165,0,0.35);
+    }
+
+    /* ── SLIDER SECTION ── */
+    .slider-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 36px 32px;
+      text-align: center;
+      margin-bottom: 32px;
+      animation: fadeUp 0.6s 0.15s ease both;
+    }
+
+    .pace-label {
+      font-size: 13px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+
+    .pace-display {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 64px;
+      letter-spacing: 0.04em;
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: 28px;
+    }
+
+    .pace-display span {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 20px;
+      font-weight: 300;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+    }
+
+    .slider-wrap { position: relative; padding: 0 8px; }
+
+    input[type=range] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      outline: none;
+      cursor: pointer;
+      background: linear-gradient(to right, var(--accent) 0%, var(--accent) var(--pct, 0%), var(--border) var(--pct, 0%), var(--border) 100%);
+    }
+
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 3px solid var(--bg);
+      box-shadow: 0 0 0 2px var(--accent), 0 4px 12px rgba(240,165,0,0.4);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+
+    input[type=range]::-webkit-slider-thumb:hover {
+      transform: scale(1.15);
+      box-shadow: 0 0 0 3px var(--accent), 0 6px 20px rgba(240,165,0,0.5);
+    }
+
+    input[type=range]::-moz-range-thumb {
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 3px solid var(--bg);
+      box-shadow: 0 0 0 2px var(--accent);
+      cursor: pointer;
+    }
+
+    .slider-bounds {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10px;
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+    }
+
+    /* ── TOTAL TIME ── */
+    .total-section {
+      text-align: center;
+      margin-bottom: 40px;
+      animation: fadeUp 0.6s 0.25s ease both;
+    }
+
+    .total-label {
+      font-size: 12px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .total-time {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 52px;
+      letter-spacing: 0.08em;
+      background: linear-gradient(135deg, #fff 0%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+    }
+
+    .total-distance {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 4px;
+      letter-spacing: 0.1em;
+    }
+
+    /* ── KM GRID ── */
+    .splits-section { animation: fadeUp 0.6s 0.35s ease both; }
+
+    .splits-header {
+      font-size: 12px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 16px;
+      text-align: center;
+    }
+
+    .splits-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .split-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: transform 0.15s, border-color 0.15s;
+    }
+
+    .split-card:hover { transform: translateY(-2px); border-color: rgba(240,165,0,0.35); }
+
+    .split-card.highlight {
+      border-color: rgba(240,165,0,0.5);
+      background: linear-gradient(135deg, rgba(240,165,0,0.06), var(--card));
+    }
+
+    .km-badge {
+      width: 34px; height: 34px;
+      border-radius: 8px;
+      background: rgba(240,165,0,0.12);
+      border: 1px solid rgba(240,165,0,0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 16px;
+      color: var(--accent);
+      flex-shrink: 0;
+      letter-spacing: 0.04em;
+    }
+
+    .split-card.highlight .km-badge { background: rgba(240,165,0,0.2); border-color: var(--accent); }
+
+    .split-time { font-size: 17px; font-weight: 500; color: var(--text); letter-spacing: 0.02em; }
+    .split-cumul { font-size: 11px; color: var(--muted); margin-top: 1px; }
+
+    @keyframes fadeDown { from { opacity:0; transform:translateY(-24px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes fadeUp   { from { opacity:0; transform:translateY(20px);  } to { opacity:1; transform:translateY(0); } }
+
+    @media (max-width: 520px) {
+      .splits-grid { grid-template-columns: repeat(2, 1fr); }
+      .slider-section { padding: 24px 18px; }
+      .seg-btn { font-size: 12px; padding: 9px 4px; }
+    }
+  </style>
+</head>
+<body>
+<div class="wrapper">
+
+  <header>
+    <div class="title">Pacer</div>
+    <div class="subtitle">Planifiez votre course !</div>
+  </header>
+
+  <!-- Distance selector -->
+  <div class="distance-section">
+    <div class="seg-label">Distance</div>
+    <div class="seg-buttons" id="distanceSelector">
+      <button class="seg-btn" data-km="10" data-splits="10" data-frac="0" data-label="10 km">10 km</button>
+      <button class="seg-btn active" data-km="21.097" data-splits="21" data-frac="0.097" data-label="Semi-Marathon · 21,1 km">21.1 km</button>
+      <button class="seg-btn" data-km="42.195" data-splits="42" data-frac="0.195" data-label="Marathon · 42,2 km">42.2 km</button>
+    </div>
+  </div>
+
+  <!-- Slider -->
+  <div class="slider-section">
+    <div class="pace-label">Allure de course</div>
+    <div class="pace-display" id="paceDisplay">–:– <span>min/km</span></div>
+    <div class="slider-wrap">
+      <input type="range" id="paceSlider" min="0" max="18" step="1" value="9"/>
+      <div class="slider-bounds">
+        <span>6:00 min/km</span>
+        <span>9:00 min/km</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Total -->
+  <div class="total-section">
+    <div class="total-label">Temps total estimé</div>
+    <div class="total-time" id="totalTime">–:–:–</div>
+    <div class="total-distance" id="totalDistance">Semi-Marathon · 21,1 km</div>
+  </div>
+
+  <!-- Splits -->
+  <div class="splits-section">
+    <div class="splits-header">Temps de passage</div>
+    <div class="splits-grid" id="splitsGrid"></div>
+  </div>
+
+</div>
+
+<script>
+  const slider = document.getElementById('paceSlider');
+  const paceDisplay = document.getElementById('paceDisplay');
+  const totalTimeEl = document.getElementById('totalTime');
+  const totalDistanceEl = document.getElementById('totalDistance');
+  const splitsGrid = document.getElementById('splitsGrid');
+
+  let currentKm = 21.097;
+  let currentSplits = 21;
+  let currentFrac = 0.097;
+  let currentLabel = 'Semi-Marathon · 21,1 km';
+
+  document.getElementById('distanceSelector').querySelectorAll('.seg-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.seg-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentKm = parseFloat(btn.dataset.km);
+      currentSplits = parseInt(btn.dataset.splits);
+      currentFrac = parseFloat(btn.dataset.frac);
+      currentLabel = btn.dataset.label;
+      render();
+    });
+  });
+
+  function stepsToSeconds(step) { return 6 * 60 + step * 10; }
+
+  function formatPace(sec) {
+    const m = Math.floor(sec / 60);
+    const s = sec % 60;
+    return `${m}:${String(s).padStart(2, '0')}`;
+  }
+
+  function formatTime(sec) {
+    const h = Math.floor(sec / 3600);
+    const m = Math.floor((sec % 3600) / 60);
+    const s = Math.round(sec % 60);
+    return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  }
+
+  function makeCard(badgeText, badgeEmoji, timeStr, subStr, highlight) {
+    const card = document.createElement('div');
+    card.className = 'split-card' + (highlight ? ' highlight' : '');
+
+    const badge = document.createElement('div');
+    badge.className = 'km-badge';
+    if (badgeEmoji) { badge.textContent = badgeEmoji; badge.style.fontSize = '14px'; }
+    else badge.textContent = badgeText;
+
+    const info = document.createElement('div');
+    const t = document.createElement('div');
+    t.className = 'split-time';
+    t.textContent = timeStr;
+    const s = document.createElement('div');
+    s.className = 'split-cumul';
+    s.textContent = subStr;
+
+    info.appendChild(t);
+    info.appendChild(s);
+    card.appendChild(badge);
+    card.appendChild(info);
+    return card;
+  }
+
+  function render() {
+    const step = parseInt(slider.value);
+    const paceSec = stepsToSeconds(step);
+
+    slider.style.setProperty('--pct', (step / 18 * 100) + '%');
+    paceDisplay.innerHTML = `${formatPace(paceSec)} <span>min/km</span>`;
+
+    const totalSec = paceSec * currentKm;
+    totalTimeEl.textContent = formatTime(totalSec);
+    totalDistanceEl.textContent = currentLabel;
+
+    splitsGrid.innerHTML = '';
+    let cumul = 0;
+    for (let km = 1; km <= currentSplits; km++) {
+      cumul += paceSec;
+      splitsGrid.appendChild(makeCard(km, null, formatTime(cumul), `+${formatPace(paceSec)} min/km`, false));
+    }
+
+    // Finish
+    if (currentFrac > 0) cumul += paceSec * currentFrac;
+    splitsGrid.appendChild(makeCard(null, '🏁', formatTime(cumul), `Arrivée · ${currentKm} km`, true));
+  }
+
+  slider.addEventListener('input', render);
+  render();
+</script>
+</body>
+</html>
